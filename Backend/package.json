@@ -1,0 +1,39 @@
+{
+  "name": "Backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/server.js",
+  "scripts": {
+    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "dev": "nodemon --config nodemon.json",
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^17.1.0",
+    "@types/crypto-js": "^3.1.43",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.0.0",
+    "express": "^4.17.1",
+    "morgan": "^1.9.1",
+    "mssql": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.3",
+    "@types/hapi__joi": "^16.0.12",
+    "@types/morgan": "^1.9.0",
+    "@types/mssql": "^6.0.0",
+    "@types/node": "^13.7.7",
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.2",
+    "ts-node": "^8.6.2",
+    "tslint": "^6.0.0",
+    "typescript": "^3.8.3"
+  }
+}
