@@ -1,12 +1,16 @@
 import Crypto from 'crypto';
 import CryptoJS, { WordArray } from 'crypto-js';
-import Config from '../Config/app'
+import Config from '../Config/app';
+import JWT from 'jsonwebtoken';
+import ResponseData from '../models/response_data';
+import SgEmail from '@sendgrid/mail';
 
 class Auth {
     private static instance: Auth;
 
     public static getInstance(): Auth {
         if (!Auth.instance) {
+            SgEmail.setApiKey(Config.EmailConfig.Key);
             Auth.instance = new Auth();
         }
         return Auth.instance;
@@ -21,11 +25,46 @@ class Auth {
         }
     }
 
+    public async SendEmail(To: string, Code: string): Promise<any> {
+        try {
+            const data: any ={
+                'to': To,
+                'from': Config.EmailConfig.Email,
+                'templateId': Config.EmailConfig.TemplateId,
+                'subject': 'Bienvenido, Código de activación ✔',
+                'dynamic_template_data': {
+                    'username': To.split('@')[0],
+                    'code': Code
+                }
+            }
+            return await SgEmail.send(data);
+        } catch (error) {
+            return error;
+        }
+    }
+
     public CryptoData(data: any, encrypt?: boolean): WordArray | string {
-        if(encrypt)
+        if (encrypt)
             return CryptoJS.AES.encrypt(data, Config.Encrypt);
         else
             return CryptoJS.AES.decrypt(data, Config.Encrypt).toString(CryptoJS.enc.Utf8);
+    }
+
+    public CreateToken(Id: string, Email: string): string {
+        return JWT.sign({ sub: Id, EmailAddress: Email }, Config.PrivateKey, { algorithm: 'RS256', expiresIn: '1d' });
+    }
+
+    public DecodeToken(Token: string): ResponseData {
+        try {
+            const payload = JWT.verify(Token, Config.PublicKey, { algorithms: ['RS256'] });
+            return { CodeError: null, Message: payload, IsError: false, StatusCode: 200 };
+        } catch (error) {
+            if (error.name === 'TokenExpiredError') {
+                const payload = JWT.verify(Token, Config.PublicKey, { ignoreExpiration: true });
+                return { CodeError: Config.EXPIRE_TOKEN, Message: payload, IsError: true, StatusCode: 401 };
+            }
+            return { CodeError: Config.OBJECT_DATA_NOT_VALID, Message: error, IsError: true, StatusCode: 401 };
+        }
     }
 
 }

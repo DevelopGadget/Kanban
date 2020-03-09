@@ -21,6 +21,7 @@ BEGIN TRY
 	  EmailValidationCode,
 	  CreateAt
 	)
+	OUTPUT Inserted.Id
 	VALUES
 	(
 		NEWID(),

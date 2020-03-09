@@ -1,6 +1,8 @@
 import MessageCodes from '../models/message_codes';
 import SQL from 'mssql';
 import { resolve } from 'path';
+import Fs from 'fs';
+import SendGridConfig from '../models/send_grid_config';
 
 class App {
 
@@ -20,9 +22,9 @@ class App {
         this.InitVariables();
     }
 
-    public async InitDatabase () {
+    public async InitDatabase() {
         try {
-           this.SQLInstance = await new SQL.ConnectionPool(this.SQLConfig).connect();
+            this.SQLInstance = await new SQL.ConnectionPool(this.SQLConfig).connect();
         } catch (e) {
             console.log(e);
         }
@@ -31,10 +33,14 @@ class App {
     OBJECT_DATA_NOT_VALID: MessageCodes = { Name: 'OBJECT_DATA_NOT_VALID', Code: 'E406' };
     DATABASE_NOT_INIT: MessageCodes = { Name: 'DATABASE_NOT_INIT', Code: 'E000' };
     DATABASE_CREATE_USER: MessageCodes = { Name: 'DATABASE_CREATE_USER', Code: 'E001' };
+    EXPIRE_TOKEN: MessageCodes = { Name: 'EXPIRE_TOKEN', Code: 'A00' };
 
     SQLConfig: SQL.config;
     SQLInstance: SQL.ConnectionPool;
     Encrypt: string;
+    PrivateKey: string = Fs.readFileSync(resolve(__dirname, '../private.key'), 'utf8');
+    PublicKey: string = Fs.readFileSync(resolve(__dirname, '../public.key'), 'utf8');
+    EmailConfig: SendGridConfig = { Email: process.env.EMAIL, Key: process.env.SENDGRID_API_KEY, TemplateId: process.env.TEMPLATE };
 
     /**
      * InitVariables

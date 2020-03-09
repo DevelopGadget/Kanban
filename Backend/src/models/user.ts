@@ -26,6 +26,6 @@ export const OptionalUserObject: Joi.SchemaMap = {
     Gender: Joi.string().valid('M', 'F').optional(),
     EmailValidationCode: Joi.string().optional(),
     EmailValidationCode_IsValidated: Joi.binary().optional(),
-    CountryCode: Joi.string().optional(),
+    CountryCode: Joi.string().optional().max(5),
     CityName: Joi.string().optional()
 };
