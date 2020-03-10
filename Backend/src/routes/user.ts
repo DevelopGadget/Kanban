@@ -4,10 +4,7 @@ import UserMiddleware from '../middleware/user';
 
 class User {
 
-    private Router : Router;
-
-    constructor(Router: Router) {
-        this.Router = Router;
+    constructor(private Router: Router) {
         this.ConfigRouter();
     }
 

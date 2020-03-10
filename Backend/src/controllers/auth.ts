@@ -27,7 +27,7 @@ class Auth {
 
     public async SendEmail(To: string, Code: string): Promise<any> {
         try {
-            const data: any ={
+            const data: any = {
                 'to': To,
                 'from': Config.EmailConfig.Email,
                 'templateId': Config.EmailConfig.TemplateId,
@@ -63,7 +63,7 @@ class Auth {
                 const payload = JWT.verify(Token, Config.PublicKey, { ignoreExpiration: true });
                 return { CodeError: Config.EXPIRE_TOKEN, Message: payload, IsError: true, StatusCode: 401 };
             }
-            return { CodeError: Config.OBJECT_DATA_NOT_VALID, Message: error, IsError: true, StatusCode: 401 };
+            return { CodeError: Config.INVALID_TOKEN, Message: error, IsError: true, StatusCode: 401 };
         }
     }
 

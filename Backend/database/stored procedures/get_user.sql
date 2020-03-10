@@ -1,5 +1,5 @@
 CREATE PROCEDURE [dbo].GetUser
-    @Id                              UNIQUEIDENTIFIER,
+    @Id                              NVARCHAR (MAX),
     @EmailAddress                    NVARCHAR (255)
 AS
 
@@ -7,7 +7,8 @@ BEGIN TRY
     SELECT TOP(1)
         Id,
         EmailAddress,
-        Name,
+        LastName,
+        FirstName,
         Username,
         Gender,
         EmailValidationCode_IsValidated,
@@ -15,7 +16,7 @@ BEGIN TRY
         CountryCode,
         CityName
     FROM
-        [dbo.Users]
+        [dbo].Users
     WHERE
         Id = @Id AND
         EmailAddress = @EmailAddress

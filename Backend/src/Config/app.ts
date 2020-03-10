@@ -31,9 +31,12 @@ class App {
     }
 
     OBJECT_DATA_NOT_VALID: MessageCodes = { Name: 'OBJECT_DATA_NOT_VALID', Code: 'E406' };
+    EMAIL_DUPLICATE: MessageCodes = { Name: 'EMAIL_DUPLICATE', Code: 'E409' };
     DATABASE_NOT_INIT: MessageCodes = { Name: 'DATABASE_NOT_INIT', Code: 'E000' };
     DATABASE_CREATE_USER: MessageCodes = { Name: 'DATABASE_CREATE_USER', Code: 'E001' };
-    EXPIRE_TOKEN: MessageCodes = { Name: 'EXPIRE_TOKEN', Code: 'A00' };
+    DATABASE_GET_USER: MessageCodes = { Name: 'DATABASE_GET_USER', Code: 'E002' };
+    EXPIRE_TOKEN: MessageCodes = { Name: 'EXPIRE_TOKEN', Code: 'A000' };
+    INVALID_TOKEN: MessageCodes = { Name: 'INVALID_TOKEN', Code: 'A001' };
 
     SQLConfig: SQL.config;
     SQLInstance: SQL.ConnectionPool;

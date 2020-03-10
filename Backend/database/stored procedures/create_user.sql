@@ -1,8 +1,9 @@
 CREATE PROCEDURE [dbo].CreateUser
     @EmailAddress                    NVARCHAR (255),
     @Username                        NVARCHAR (100),
-    @Password                        NVARCHAR (100),
-    @Name                            NVARCHAR (MAX),
+    @Password                        NVARCHAR (16),
+    @FirstName                       NVARCHAR (100),
+    @LastName                        NVARCHAR (100),
     @Gender                          CHAR (1),
     @EmailValidationCode             NVARCHAR (20)   
 
@@ -16,7 +17,8 @@ BEGIN TRY
 	  EmailAddress,
 	  Username,
 	  Password,
-	  Name,
+	  FirstName,
+	  LastName,
 	  Gender,
 	  EmailValidationCode,
 	  CreateAt
@@ -28,7 +30,8 @@ BEGIN TRY
 		@EmailAddress,
 		@Username,
 		@Password,
-		@Name,
+		@FirstName,
+		@LastName,
 		@Gender,
 		@EmailValidationCode,
 		CURRENT_TIMESTAMP
