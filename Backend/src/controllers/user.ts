@@ -14,9 +14,9 @@ class User implements Controller {
         if (AppConfig.SQLInstance) {
             try {
                 let result = await AppConfig.SQLInstance.request()
-                .input('EmailAddress', req.headers.EmailAddress ?? req.headers.emailaddress)
-                .input('Id', req.headers.Id ?? req.headers.id)
-                .execute('GetUser');
+                    .input('EmailAddress', req.headers.EmailAddress ?? req.headers.emailaddress)
+                    .input('Id', req.headers.Id ?? req.headers.id)
+                    .execute('GetUser');
                 return res.status(200).json({ StatusCode: 200, Message: result.recordset, CodeError: null, IsError: false });
             } catch (error) {
                 return res.status(404).json({ StatusCode: 404, Message: error, CodeError: AppConfig.DATABASE_GET_USER, IsError: true });
@@ -28,14 +28,13 @@ class User implements Controller {
 
     async Post(req: Request, res: Response): Promise<Response<ResponseData>> {
         if (AppConfig.SQLInstance) {
-            req.body.Password = AuthController.CryptoData(req.body.Password, true);
             try {
-                req.body.Code = await AuthController.CreateCode();
+                console.log(req.body.Password.toString());
                 await AuthController.SendEmail(req.body.EmailAddress, req.body.Code);
                 let result = await AppConfig.SQLInstance.request()
                     .input('EmailAddress', req.body.EmailAddress)
                     .input('Username', req.body.Username)
-                    .input('Password', req.body.Password)
+                    .input('Password', req.body.Password.toString())
                     .input('FirstName', req.body.FirstName)
                     .input('LastName', req.body.LastName)
                     .input('Gender', req.body.Gender)
@@ -53,7 +52,32 @@ class User implements Controller {
     }
 
     async PostLogin(req: Request, res: Response): Promise<Response<ResponseData>> {
-        throw new Error("Method not implemented.");
+        if (AppConfig.SQLInstance) {
+            try {
+                let result = await AppConfig.SQLInstance.request()
+                    .input('User', req.body.User)
+                    .input('Password', req.body.Password.toString())
+                    .execute('LoginUser');
+                return res.status(200).json({ StatusCode: 200, Message: result.recordset, CodeError: null, IsError: false });
+            } catch (error) {
+                switch (error.originalError.info.message) {
+                    case 'A002':
+                        return res.status(202).json({ StatusCode: 202, Message: error, CodeError: AppConfig.INACTIVE_USER, IsError: true });
+                        break;
+                    case 'A003':
+                        return res.status(401).json({ StatusCode: 401, Message: error, CodeError: AppConfig.INVALID_PASSWORD, IsError: true });
+                        break;
+                    case 'A004':
+                        return res.status(203).json({ StatusCode: 203, Message: error, CodeError: AppConfig.NOT_VERIFIED_EMAIL, IsError: true });
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+        } else {
+            return res.status(500).json({ StatusCode: 500, Message: 'DATABASE_NOT_INIT', CodeError: AppConfig.DATABASE_NOT_INIT, IsError: true });
+        }
     }
 
     Put(req: Request, res: Response): Promise<Response<ResponseData>> {

@@ -37,6 +37,9 @@ class App {
     DATABASE_GET_USER: MessageCodes = { Name: 'DATABASE_GET_USER', Code: 'E002' };
     EXPIRE_TOKEN: MessageCodes = { Name: 'EXPIRE_TOKEN', Code: 'A000' };
     INVALID_TOKEN: MessageCodes = { Name: 'INVALID_TOKEN', Code: 'A001' };
+    INACTIVE_USER: MessageCodes = { Name: 'INACTIVE_USER', Code: 'A002' };
+    INVALID_PASSWORD: MessageCodes = { Name: 'INVALID_PASSWORD', Code: 'A003' };
+    NOT_VERIFIED_EMAIL: MessageCodes = { Name: 'NOT_VERIFIED_EMAIL', Code: 'A004' };
 
     SQLConfig: SQL.config;
     SQLInstance: SQL.ConnectionPool;

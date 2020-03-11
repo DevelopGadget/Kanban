@@ -2,7 +2,7 @@ CREATE TABLE [dbo].[Users] (
     [Id]                              UNIQUEIDENTIFIER NOT NULL,
     [EmailAddress]                    NVARCHAR (255)   NOT NULL,
     [Username]                        NVARCHAR (100)   NOT NULL,
-    [Password]                        NVARCHAR (255)    NOT NULL,
+    [Password]                        VARBINARY (MAX)  NOT NULL,
     [CountryCode]                     NVARCHAR (5)         NULL,
     [CityName]                        NVARCHAR (100)       NULL,
     [LastName]                        NVARCHAR (100)   NOT NULL,

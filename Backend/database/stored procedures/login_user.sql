@@ -5,8 +5,11 @@ AS
 
 BEGIN
 
+    OPEN SYMMETRIC KEY SymmetricKey1
+    DECRYPTION BY CERTIFICATE Certificate1;
+
     DECLARE @PasswordSelect NVARCHAR (255);
-    DECLARE @Id             UNIQUEIDENTIFIER;
+    DECLARE @Id UNIQUEIDENTIFIER;
     DECLARE @EmailAddress NVARCHAR(255);
     DECLARE @LastName NVARCHAR(100);
     DECLARE @FirstName NVARCHAR(100);
@@ -38,21 +41,23 @@ BEGIN
 
     IF(@IsActiveUser IS NULL OR @IsActiveUser = 0)
         BEGIN
-        RAISERROR('A010', 16, 1)
-        RETURN;
-    END
-    
-    IF(@Password != @PasswordSelect)
-        BEGIN
-        RAISERROR('A001', 16, 1)
-        RETURN;
-    END
-
-    IF(@EmailValidationCode_IsValidated != @EmailValidationCode_IsValidated)
-        BEGIN
         RAISERROR('A002', 16, 1)
         RETURN;
     END
+    
+    IF(@Password != CONVERT(varchar, DecryptByKey(@PasswordSelect)))
+        BEGIN
+        RAISERROR('A003', 16, 1)
+        RETURN;
+    END
+
+    IF(@EmailValidationCode_IsValidated = 0)
+        BEGIN
+        RAISERROR('A004', 16, 1)
+        RETURN;
+    END
+
+    CLOSE SYMMETRIC KEY SymmetricKey1;
 
     SELECT
         @Id AS Id,
@@ -68,6 +73,7 @@ BEGIN
         
 END TRY
 BEGIN CATCH
+    CLOSE SYMMETRIC KEY SymmetricKey1;
 	IF @@TRANCOUNT > 0
 	ROLLBACK
 

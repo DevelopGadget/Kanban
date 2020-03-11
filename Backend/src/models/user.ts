@@ -31,3 +31,8 @@ export const OptionalUserObject: Joi.SchemaMap = {
     CountryCode: Joi.string().optional().max(5),
     CityName: Joi.string().optional()
 };
+
+export const Login: Joi.ObjectSchema = Joi.object({
+    User: Joi.string().required(),
+    Password: Joi.string().required().min(8).max(16).regex(new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/)),
+});
