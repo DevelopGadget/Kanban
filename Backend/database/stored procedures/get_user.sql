@@ -1,42 +1,84 @@
 CREATE PROCEDURE [dbo].GetUser
-    @Id                              NVARCHAR (MAX),
-    @EmailAddress                    NVARCHAR (255)
+    @Id                      NVARCHAR (MAX),
+    @User                    NVARCHAR (255)
 AS
 
-BEGIN TRY
-    SELECT TOP(1)
-        Id,
-        EmailAddress,
-        LastName,
-        FirstName,
-        Username,
-        Gender,
-        EmailValidationCode_IsValidated,
-        IsActiveUser,
-        CountryCode,
-        CityName
-    FROM
-        [dbo].Users
-    WHERE
-        Id = @Id AND
-        EmailAddress = @EmailAddress
-END TRY
-BEGIN CATCH
-	IF @@TRANCOUNT > 0
-	ROLLBACK
+BEGIN
+    
+    DECLARE @IdUser UNIQUEIDENTIFIER;
+    DECLARE @EmailAddress VARCHAR(255);
+    DECLARE @LastName VARCHAR(100);
+    DECLARE @FirstName VARCHAR(100);
+    DECLARE @Username VARCHAR(100);
+    DECLARE @Gender CHAR(1);
+    DECLARE @EmailValidationCode_IsValidated BIT;
+    DECLARE @IsActiveUser BIT;
+    DECLARE @CountryCode VARCHAR(5);
+    DECLARE @CityName VARCHAR(100);
 
-	DECLARE @ErrorMessage NVARCHAR(4000);  
-    DECLARE @ErrorSeverity INT;  
-    DECLARE @ErrorState INT;  
+    BEGIN TRY
 
-    SELECT   
-        @ErrorMessage = ERROR_MESSAGE(),  
-        @ErrorSeverity = ERROR_SEVERITY(),  
-        @ErrorState = ERROR_STATE();  
- 
-    RAISERROR (@ErrorMessage, -- Message text.  
-               @ErrorSeverity, -- Severity.  
-               @ErrorState -- State.  
-               );  
+        SELECT TOP(1)
+            @IdUser = Id,
+            @EmailAddress = EmailAddress,
+            @LastName = LastName,
+            @FirstName = FirstName,
+            @Username = Username,
+            @Gender = Gender,
+            @EmailValidationCode_IsValidated = EmailValidationCode_IsValidated,
+            @IsActiveUser = IsActiveUser,
+            @CountryCode = CountryCode,
+            @CityName = CityName
+        FROM
+            [dbo].Users
+        WHERE
+            Id = @Id AND
+            (EmailAddress = @User OR Username = @User)
 
-END CATCH
+        IF(@IdUser IS NULL)
+            BEGIN
+            RAISERROR('E404', 16, 1)
+            RETURN;
+        END
+
+        IF(@IsActiveUser IS NULL OR @IsActiveUser = 0)
+            BEGIN
+            RAISERROR('A002', 16, 1)
+            RETURN;
+        END
+
+        SELECT
+            @IdUser AS Id,
+            @Username AS Username,
+            @CityName AS CityName,
+            @CountryCode AS CountryCode,
+            @EmailAddress AS EmailAddress,
+            @Gender AS Gender,
+            @FirstName AS FirstName,
+            @LastName AS LastName,
+            @EmailValidationCode_IsValidated AS EmailValidationCode_IsValidated,
+            @IsActiveUser AS IsActiveUser;
+
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+        ROLLBACK
+
+        DECLARE @ErrorSeverity INT;  
+        DECLARE @ErrorState INT;  
+        DECLARE @ErrorNumber INT;  
+
+        SELECT
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE(),
+            @ErrorNumber = ERROR_NUMBER();
+
+        RAISERROR ('%i', -- Message text.  
+                @ErrorSeverity, -- Severity.  
+                @ErrorState, -- State.
+                @ErrorNumber --Error Number  
+                );  
+
+    END CATCH
+
+END

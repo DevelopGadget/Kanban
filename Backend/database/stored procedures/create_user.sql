@@ -47,19 +47,19 @@ BEGIN CATCH
 	IF @@TRANCOUNT > 0
 	ROLLBACK
 
-	DECLARE @ErrorMessage NVARCHAR(4000);  
     DECLARE @ErrorSeverity INT;  
     DECLARE @ErrorState INT;  
+    DECLARE @ErrorNumber INT;  
 
     SELECT
-	@ErrorMessage = ERROR_MESSAGE(),
-	@ErrorSeverity = ERROR_SEVERITY(),
-	@ErrorState = ERROR_STATE();  
- 
-    RAISERROR (@ErrorMessage, -- Message text.  
-               @ErrorSeverity, -- Severity.  
-               @ErrorState -- State.  
-               );  
+		@ErrorSeverity = ERROR_SEVERITY(),
+		@ErrorState = ERROR_STATE(),
+ 		@ErrorNumber = ERROR_NUMBER();
 
+    RAISERROR ('%i', -- Message text.  
+               @ErrorSeverity, -- Severity.  
+               @ErrorState, -- State.
+			   @ErrorNumber --Error Number  
+               );  
 
 END CATCH

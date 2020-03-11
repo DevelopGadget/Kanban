@@ -29,12 +29,11 @@ class User implements Controller {
     async Post(req: Request, res: Response): Promise<Response<ResponseData>> {
         if (AppConfig.SQLInstance) {
             try {
-                console.log(req.body.Password.toString());
                 await AuthController.SendEmail(req.body.EmailAddress, req.body.Code);
                 let result = await AppConfig.SQLInstance.request()
                     .input('EmailAddress', req.body.EmailAddress)
                     .input('Username', req.body.Username)
-                    .input('Password', req.body.Password.toString())
+                    .input('Password', req.body.Password)
                     .input('FirstName', req.body.FirstName)
                     .input('LastName', req.body.LastName)
                     .input('Gender', req.body.Gender)
@@ -42,7 +41,7 @@ class User implements Controller {
                     .execute('CreateUser');
                 return res.status(202).json({ StatusCode: 202, Message: { Id: result.recordset[0].Id, Email: req.body.EmailAddress }, CodeError: null, IsError: false });
             } catch (error) {
-                if (error.number === 50000)
+                if (error.originalError.info.message === '2627')
                     return res.status(409).json({ StatusCode: 409, Message: error, CodeError: AppConfig.EMAIL_DUPLICATE, IsError: true });
                 return res.status(400).json({ StatusCode: 400, Message: error, CodeError: AppConfig.DATABASE_CREATE_USER, IsError: true });
             }

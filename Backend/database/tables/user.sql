@@ -9,7 +9,7 @@ CREATE TABLE [dbo].[Users] (
     [FirstName]                       NVARCHAR (100)   NOT NULL,
     [Gender]                          CHAR (1)             NULL,
     [CreateAt]                        DATETIME         NOT NULL,
-    [EmailValidationCode]             NVARCHAR (20)        NULL,
+    [EmailValidationCode]             VARBINARY (MAX)        NULL,
     [EmailValidationCode_IsValidated] BIT        DEFAULT 0 NOT NULL,
     [IsActiveUser] BIT              DEFAULT 1 NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
