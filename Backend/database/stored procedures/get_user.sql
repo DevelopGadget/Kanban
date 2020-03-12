@@ -65,18 +65,21 @@ BEGIN
         ROLLBACK
 
         DECLARE @ErrorSeverity INT;  
+        DECLARE @ErrorMessage NVARCHAR(4000);  
         DECLARE @ErrorState INT;  
         DECLARE @ErrorNumber INT;  
 
         SELECT
             @ErrorSeverity = ERROR_SEVERITY(),
             @ErrorState = ERROR_STATE(),
-            @ErrorNumber = ERROR_NUMBER();
+            @ErrorNumber = ERROR_NUMBER(),
+            @ErrorMessage = ERROR_MESSAGE();
 
-        RAISERROR ('%i', -- Message text.  
+        RAISERROR ('%i %s', -- Message text.  
                 @ErrorSeverity, -- Severity.  
                 @ErrorState, -- State.
-                @ErrorNumber --Error Number  
+                @ErrorNumber,
+                @ErrorMessage --Error Number  
                 );  
 
     END CATCH

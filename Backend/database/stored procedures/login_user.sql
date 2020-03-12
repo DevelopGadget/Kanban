@@ -9,7 +9,7 @@ BEGIN
     DECRYPTION BY CERTIFICATE Certificate1;
 
     DECLARE @PasswordSelect NVARCHAR (255);
-    DECLARE @Id UNIQUEIDENTIFIER;
+    DECLARE @Id NVARCHAR (255);
     DECLARE @EmailAddress NVARCHAR(255);
     DECLARE @LastName NVARCHAR(100);
     DECLARE @FirstName NVARCHAR(100);
@@ -59,7 +59,7 @@ BEGIN
 
     IF(@EmailValidationCode_IsValidated = 0)
         BEGIN
-        RAISERROR('A004', 16, 1)
+        RAISERROR('A004 %s', 16, 1, @Id)
         RETURN;
     END
 
@@ -84,18 +84,21 @@ BEGIN CATCH
 	ROLLBACK
 
     DECLARE @ErrorSeverity INT;  
+    DECLARE @ErrorMessage NVARCHAR(4000);  
     DECLARE @ErrorState INT;  
     DECLARE @ErrorNumber INT;  
 
     SELECT
 		@ErrorSeverity = ERROR_SEVERITY(),
 		@ErrorState = ERROR_STATE(),
- 		@ErrorNumber = ERROR_NUMBER();
+ 		@ErrorNumber = ERROR_NUMBER(),
+        @ErrorMessage = ERROR_MESSAGE();
 
-    RAISERROR ('%i', -- Message text.  
+    RAISERROR ('%i %s', -- Message text.  
                @ErrorSeverity, -- Severity.  
                @ErrorState, -- State.
-			   @ErrorNumber --Error Number  
+			   @ErrorNumber,
+               @ErrorMessage --Error Number  
                );  
 
 END CATCH

@@ -1,10 +1,12 @@
-import Controller from '../models/controller';
+import Controller, { ValidateError } from '../models/controller';
 import { Response, Request } from 'express';
 import ResponseData from '../models/response_data';
 import AppConfig from '../Config/app';
 import AuthController from './auth';
 
-class User implements Controller {
+class User extends Controller {
+
+    constructor() { super(); }
 
     Get(req: Request, res: Response): Promise<Response<ResponseData>> {
         throw new Error("Method not implemented.");
@@ -19,7 +21,8 @@ class User implements Controller {
                     .execute('GetUser');
                 return res.status(200).json({ StatusCode: 200, Message: result.recordset, CodeError: null, IsError: false });
             } catch (error) {
-                return res.status(404).json({ StatusCode: 404, Message: error, CodeError: AppConfig.DATABASE_GET_USER, IsError: true });
+                const dataError = ValidateError(error);
+                return res.status(dataError.StatusCode).json(dataError);
             }
         } else {
             return res.status(500).json({ StatusCode: 500, Message: 'DATABASE_NOT_INIT', CodeError: AppConfig.DATABASE_NOT_INIT, IsError: true });
@@ -41,9 +44,8 @@ class User implements Controller {
                     .execute('CreateUser');
                 return res.status(202).json({ StatusCode: 202, Message: { Id: result.recordset[0].Id, Email: req.body.EmailAddress }, CodeError: null, IsError: false });
             } catch (error) {
-                if (error.originalError.info.message === '2627')
-                    return res.status(409).json({ StatusCode: 409, Message: error, CodeError: AppConfig.EMAIL_DUPLICATE, IsError: true });
-                return res.status(400).json({ StatusCode: 400, Message: error, CodeError: AppConfig.DATABASE_CREATE_USER, IsError: true });
+                const dataError = ValidateError(error);
+                return res.status(dataError.StatusCode).json(dataError);
             }
         } else {
             return res.status(500).json({ StatusCode: 500, Message: 'DATABASE_NOT_INIT', CodeError: AppConfig.DATABASE_NOT_INIT, IsError: true });
@@ -55,24 +57,12 @@ class User implements Controller {
             try {
                 let result = await AppConfig.SQLInstance.request()
                     .input('User', req.body.User)
-                    .input('Password', req.body.Password.toString())
+                    .input('Password', req.body.Password)
                     .execute('LoginUser');
                 return res.status(200).json({ StatusCode: 200, Message: result.recordset, CodeError: null, IsError: false });
             } catch (error) {
-                switch (error.originalError.info.message) {
-                    case 'A002':
-                        return res.status(202).json({ StatusCode: 202, Message: error, CodeError: AppConfig.INACTIVE_USER, IsError: true });
-                        break;
-                    case 'A003':
-                        return res.status(401).json({ StatusCode: 401, Message: error, CodeError: AppConfig.INVALID_PASSWORD, IsError: true });
-                        break;
-                    case 'A004':
-                        return res.status(203).json({ StatusCode: 203, Message: error, CodeError: AppConfig.NOT_VERIFIED_EMAIL, IsError: true });
-                        break;
-                    default:
-                        break;
-                }
-
+                const dataError = ValidateError(error);
+                return res.status(dataError.StatusCode).json(dataError);
             }
         } else {
             return res.status(500).json({ StatusCode: 500, Message: 'DATABASE_NOT_INIT', CodeError: AppConfig.DATABASE_NOT_INIT, IsError: true });
@@ -81,6 +71,24 @@ class User implements Controller {
 
     Put(req: Request, res: Response): Promise<Response<ResponseData>> {
         throw new Error("Method not implemented.");
+    }
+
+    async PutEmailValidationCode(req: Request, res: Response): Promise<Response<ResponseData>> {
+        if (AppConfig.SQLInstance) {
+            try {
+                let result = await AppConfig.SQLInstance.request()
+                    .input('User', req.headers.User)
+                    .input('Id', req.headers.Id)
+                    .input('Code', req.params.Code)
+                    .execute('ValidateEmail');
+                return res.status(200).json({ StatusCode: 200, Message: result.recordset, CodeError: null, IsError: false });
+            } catch (error) {
+                const dataError = ValidateError(error);
+                return res.status(dataError.StatusCode).json(dataError);
+            }
+        } else {
+
+        }
     }
 
     Delete(req: Request, res: Response): Promise<Response<ResponseData>> {

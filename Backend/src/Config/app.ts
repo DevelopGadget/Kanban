@@ -33,13 +33,15 @@ class App {
     OBJECT_DATA_NOT_VALID: MessageCodes = { Name: 'OBJECT_DATA_NOT_VALID', Code: 'E406' };
     EMAIL_DUPLICATE: MessageCodes = { Name: 'EMAIL_DUPLICATE', Code: 'E409' };
     DATABASE_NOT_INIT: MessageCodes = { Name: 'DATABASE_NOT_INIT', Code: 'E000' };
-    DATABASE_CREATE_USER: MessageCodes = { Name: 'DATABASE_CREATE_USER', Code: 'E001' };
-    DATABASE_GET_USER: MessageCodes = { Name: 'DATABASE_GET_USER', Code: 'E002' };
     EXPIRE_TOKEN: MessageCodes = { Name: 'EXPIRE_TOKEN', Code: 'A000' };
     INVALID_TOKEN: MessageCodes = { Name: 'INVALID_TOKEN', Code: 'A001' };
     INACTIVE_USER: MessageCodes = { Name: 'INACTIVE_USER', Code: 'A002' };
     INVALID_PASSWORD: MessageCodes = { Name: 'INVALID_PASSWORD', Code: 'A003' };
     NOT_VERIFIED_EMAIL: MessageCodes = { Name: 'NOT_VERIFIED_EMAIL', Code: 'A004' };
+    VERIFIED_EMAIL: MessageCodes = { Name: 'VERIFIED_EMAIL', Code: 'A005' };
+    INVALID_CODE: MessageCodes = { Name: 'INVALID_CODE', Code: 'A006' };
+    ERROR_IN_REQUEST: MessageCodes = { Name: 'ERROR_IN_REQUEST', Code: 'E000' };
+    USER_NOT_FOUND: MessageCodes = { Name: 'USER_NOT_FOUND', Code: 'E404' };
 
     SQLConfig: SQL.config;
     SQLInstance: SQL.ConnectionPool;
