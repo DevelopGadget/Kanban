@@ -21,16 +21,25 @@ export const RequiredUserObject: Joi.ObjectSchema = Joi.object({
     EmailAddress: Joi.string().email().required(),
     Password: Joi.string().required().min(8).max(16).regex(new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/)),
     FirstName: Joi.string().required().max(100),
-    LastName: Joi.string().required().max(100)
+    LastName: Joi.string().required().max(100),
+    EmailValidationCode: Joi.string().optional(),
 });
 
 export const OptionalUserObject: Joi.SchemaMap = {
     Gender: Joi.string().valid('M', 'F').optional(),
-    EmailValidationCode: Joi.string().optional(),
-    EmailValidationCode_IsValidated: Joi.binary().optional(),
     CountryCode: Joi.string().optional().max(5),
     CityName: Joi.string().optional()
 };
+
+export const OptionalUserUpdate: Joi.ObjectSchema = Joi.object({
+    FirstName: Joi.string().optional().max(100),
+    LastName: Joi.string().optional().max(100),
+});
+
+export const Pagination: Joi.ObjectSchema = Joi.object({
+    PageNumber: Joi.number().default(1).optional(),
+    PageSize: Joi.number().default(100).optional(),
+});
 
 export const Login: Joi.ObjectSchema = Joi.object({
     User: Joi.string().required(),

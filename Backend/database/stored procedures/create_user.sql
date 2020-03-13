@@ -5,6 +5,8 @@ CREATE PROCEDURE [dbo].CreateUser
 	@FirstName                       NVARCHAR (100),
 	@LastName                        NVARCHAR (100),
 	@Gender                          CHAR (1),
+	@CountryCode                     NVARCHAR (100),
+	@CityName                        NVARCHAR (100),
 	@EmailValidationCode             NVARCHAR (20)
 
 AS
@@ -16,19 +18,21 @@ BEGIN TRY
 
 	INSERT INTO [dbo].Users
 	(
-	Id,
-	EmailAddress,
-	Username,
-	Password,
-	FirstName,
-	LastName,
-	Gender,
-	EmailValidationCode,
-	CreateAt
+		Id,
+		EmailAddress,
+		Username,
+		Password,
+		FirstName,
+		LastName,
+		Gender,
+		EmailValidationCode,
+		CreateAt,
+		CountryCode,
+		CityName
 	)
-OUTPUT
-Inserted.Id
-VALUES
+	OUTPUT
+		Inserted.Id
+	VALUES
 	(
 		NEWID(),
 		@EmailAddress,
@@ -38,7 +42,9 @@ VALUES
 		@LastName,
 		@Gender,
 		EncryptByKey (Key_GUID('SymmetricKey1'),@EmailValidationCode),
-		CURRENT_TIMESTAMP
+		CURRENT_TIMESTAMP,
+		@CountryCode,
+		@CityName
 	)
 	CLOSE SYMMETRIC KEY SymmetricKey1;
 END TRY
