@@ -1,7 +1,7 @@
-CREATE PROCEDURE [dbo].ValidateEmail
+CREATE PROCEDURE [dbo].InactiveUser
     @Id                              NVARCHAR (MAX),
     @User                            NVARCHAR (100) ,
-    @Code                            NVARCHAR (100)
+    @Password                        NVARCHAR (16)
 AS
 
 BEGIN
@@ -9,18 +9,16 @@ BEGIN
     OPEN SYMMETRIC KEY SymmetricKey1
     DECRYPTION BY CERTIFICATE Certificate1;
 
-    DECLARE @EmailValidationCode_IsValidated BIT;
     DECLARE @IsActiveUser BIT;
-    DECLARE @EmailValidationCode NVARCHAR(100);
     DECLARE @IdUser UNIQUEIDENTIFIER;
+    DECLARE @PasswordSelect NVARCHAR (255);
 
     BEGIN TRY
 
     SELECT TOP(1)
         @IdUser = Id,
         @IsActiveUser = IsActiveUser,
-        @EmailValidationCode_IsValidated = EmailValidationCode_IsValidated,
-        @EmailValidationCode = EmailValidationCode
+        @PasswordSelect = Password
     FROM
         [dbo].Users
     WHERE
@@ -39,15 +37,9 @@ BEGIN
         RETURN;
     END
 
-    IF(@EmailValidationCode_IsValidated = 1)
+    IF(@Password != CONVERT(varchar, DecryptByKey(@PasswordSelect)))
         BEGIN
-        RAISERROR('A005', 16, 1)
-        RETURN;
-    END
-
-    IF(@Code != CONVERT(varchar, DecryptByKey(@EmailValidationCode)))
-        BEGIN
-        RAISERROR('A006', 16, 1)
+        RAISERROR('A003', 16, 1)
         RETURN;
     END
 
@@ -56,24 +48,10 @@ BEGIN
     UPDATE
         [dbo].Users
     SET
-        EmailValidationCode = NULL,
-        EmailValidationCode_IsValidated = 1
-    OUTPUT
-        Inserted.Id,
-        Inserted.Username,
-        Inserted.CityName,
-        Inserted.CountryCode,
-        Inserted.EmailAddress,
-        Inserted.Gender,
-        Inserted.FirstName,
-        Inserted.LastName,
-        Inserted.EmailValidationCode_IsValidated,
-        Inserted.IsActiveUser
+        IsActiveUser = 0
     WHERE
         Id = @Id AND
         (EmailAddress = @User OR Username = @User)
-
-    
         
 END TRY
 BEGIN CATCH

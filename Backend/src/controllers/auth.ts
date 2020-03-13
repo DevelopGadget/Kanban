@@ -1,5 +1,4 @@
 import Crypto from 'crypto';
-import CryptoJS, { WordArray } from 'crypto-js';
 import Config from '../Config/app';
 import JWT from 'jsonwebtoken';
 import ResponseData from '../models/response_data';
@@ -41,13 +40,6 @@ class Auth {
         } catch (error) {
             return error;
         }
-    }
-
-    public CryptoData(data: any, encrypt?: boolean): WordArray | string {
-        if (encrypt)
-            return CryptoJS.AES.encrypt(data, Config.Encrypt);
-        else
-            return CryptoJS.AES.decrypt(data, Config.Encrypt).toString(CryptoJS.enc.Utf8);
     }
 
     public CreateToken(Id: string, Email: string): string {

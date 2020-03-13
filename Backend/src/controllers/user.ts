@@ -16,10 +16,10 @@ class User extends Controller {
         if (AppConfig.SQLInstance) {
             try {
                 let result = await AppConfig.SQLInstance.request()
-                    .input('EmailAddress', req.headers.EmailAddress ?? req.headers.emailaddress)
+                    .input('User', req.headers.User ?? req.headers.user)
                     .input('Id', req.headers.Id ?? req.headers.id)
                     .execute('GetUser');
-                return res.status(200).json({ StatusCode: 200, Message: result.recordset, CodeError: null, IsError: false });
+                return res.status(200).json({ StatusCode: 200, Message: result.recordset[0], CodeError: null, IsError: false });
             } catch (error) {
                 const dataError = ValidateError(error);
                 return res.status(dataError.StatusCode).json(dataError);
@@ -59,7 +59,7 @@ class User extends Controller {
                     .input('User', req.body.User)
                     .input('Password', req.body.Password)
                     .execute('LoginUser');
-                return res.status(200).json({ StatusCode: 200, Message: result.recordset, CodeError: null, IsError: false });
+                return res.status(200).json({ StatusCode: 200, Message: { 'Token': AuthController.CreateToken(result.recordset[0].Id, result.recordset[0].EmailAddress), ...result.recordset[0] }, CodeError: null, IsError: false });
             } catch (error) {
                 const dataError = ValidateError(error);
                 return res.status(dataError.StatusCode).json(dataError);
@@ -77,22 +77,36 @@ class User extends Controller {
         if (AppConfig.SQLInstance) {
             try {
                 let result = await AppConfig.SQLInstance.request()
-                    .input('User', req.headers.User)
-                    .input('Id', req.headers.Id)
+                    .input('User', req.headers.User ?? req.headers.user)
+                    .input('Id', req.headers.Id ?? req.headers.id)
                     .input('Code', req.params.Code)
                     .execute('ValidateEmail');
+                return res.status(200).json({ StatusCode: 200, Message: result.recordset[0], CodeError: null, IsError: false });
+            } catch (error) {
+                const dataError = ValidateError(error);
+                return res.status(dataError.StatusCode).json(dataError);
+            }
+        } else {
+            return res.status(500).json({ StatusCode: 500, Message: 'DATABASE_NOT_INIT', CodeError: AppConfig.DATABASE_NOT_INIT, IsError: true });
+        }
+    }
+
+    async Delete(req: Request, res: Response): Promise<Response<ResponseData>> {
+        if (AppConfig.SQLInstance) {
+            try {
+                let result = await AppConfig.SQLInstance.request()
+                    .input('User', req.headers.User ?? req.headers.user)
+                    .input('Id', req.headers.Id ?? req.headers.id)
+                    .input('Password', req.headers.Password ?? req.headers.password)
+                    .execute('InactiveUser');
                 return res.status(200).json({ StatusCode: 200, Message: result.recordset, CodeError: null, IsError: false });
             } catch (error) {
                 const dataError = ValidateError(error);
                 return res.status(dataError.StatusCode).json(dataError);
             }
         } else {
-
+            return res.status(500).json({ StatusCode: 500, Message: 'DATABASE_NOT_INIT', CodeError: AppConfig.DATABASE_NOT_INIT, IsError: true });
         }
-    }
-
-    Delete(req: Request, res: Response): Promise<Response<ResponseData>> {
-        throw new Error("Method not implemented.");
     }
 
 }

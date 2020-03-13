@@ -9,13 +9,13 @@ class User {
     }
 
     private ConfigRouter() {
-        this.Router.get('/user', UserController.Get);
-        this.Router.get('/user/id', UserController.GetId);
-        this.Router.post('/user/auth/signup',UserMiddleware.IsValidUser, UserController.Post);
-        this.Router.post('/user/auth/login',UserMiddleware.IsValidLogin, UserController.PostLogin);
-        this.Router.put('/user', UserController.Put);
-        this.Router.put('/user/email', UserController.PutEmailValidationCode);
-        this.Router.delete('/user', UserController.Delete);
+        this.Router.get('/user', UserMiddleware.IsValidToken, UserController.Get);
+        this.Router.get('/user/id', UserMiddleware.IsValidToken, UserController.GetId);
+        this.Router.post('/user/auth/signup', UserMiddleware.IsValidUser, UserController.Post);
+        this.Router.post('/user/auth/login', UserMiddleware.IsValidLogin, UserController.PostLogin);
+        this.Router.put('/user', UserMiddleware.IsValidToken, UserController.Put);
+        this.Router.put('/user/email/:Code', UserMiddleware.IsValidToken, UserController.PutEmailValidationCode);
+        this.Router.delete('/user', UserMiddleware.IsValidToken, UserController.Delete);
     }
 
 }
