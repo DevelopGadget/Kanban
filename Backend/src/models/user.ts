@@ -41,6 +41,12 @@ export const Pagination: Joi.ObjectSchema = Joi.object({
     PageSize: Joi.number().default(100).optional(),
 });
 
+export const ValidationCode: Joi.ObjectSchema = Joi.object({
+    Id: Joi.string().required(),
+    User: Joi.string().required(),
+    Code: Joi.string().required(),
+});
+
 export const Login: Joi.ObjectSchema = Joi.object({
     User: Joi.string().required(),
     Password: Joi.string().required().min(8).max(16).regex(new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/)),

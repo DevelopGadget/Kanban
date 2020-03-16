@@ -16,12 +16,12 @@ class Forms {
             validators: [Validators.required]
         }),
         Password: new FormControl('', {
-            validators: [Validators.required]
+            validators: [Validators.required, Validators.pattern(new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/))]
         }),
     });
 
     FormSignUp: FormGroup = new FormGroup({
-        EmailAdress: new FormControl('', {
+        EmailAddress: new FormControl('', {
             validators: [Validators.required, Validators.email]
         }),
         Password: new FormControl('', {

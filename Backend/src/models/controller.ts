@@ -10,20 +10,20 @@ export default abstract class Controller {
     abstract Delete(req: Request, res: Response): Promise<Response<ResponseData>>;
 }
 
-export const ValidateError = (DataError: any): ResponseData => {
+export const ValidateError = (DataError: any, User: string = ''): ResponseData => {
     try {
         if (DataError.originalError.info.message.includes('2627'))
             return { StatusCode: 409, Message: DataError, CodeError: AppConfig.EMAIL_DUPLICATE, IsError: true };
         else if (DataError.originalError.info.message.includes('A002'))
-            return { StatusCode: 202, Message: DataError, CodeError: AppConfig.INACTIVE_USER, IsError: true };
+            return { StatusCode: 201, Message: DataError, CodeError: AppConfig.INACTIVE_USER, IsError: true };
         else if (DataError.originalError.info.message.includes('A003'))
             return { StatusCode: 401, Message: DataError, CodeError: AppConfig.INVALID_PASSWORD, IsError: true };
         else if (DataError.originalError.info.message.includes('A004'))
-            return { StatusCode: 203, Message: { 'Id': DataError.originalError.info.message.split(' ')[2] }, IsError: true, CodeError: AppConfig.NOT_VERIFIED_EMAIL };
+            return { StatusCode: 202, Message: { 'Id': DataError.originalError.info.message.split(' ')[2], User }, IsError: true, CodeError: AppConfig.NOT_VERIFIED_EMAIL };
         else if (DataError.originalError.info.message.includes('A005'))
             return { StatusCode: 203, Message: DataError, IsError: true, CodeError: AppConfig.VERIFIED_EMAIL };
         else if (DataError.originalError.info.message.includes('A006'))
-            return { StatusCode: 203, Message: DataError, IsError: true, CodeError: AppConfig.INVALID_CODE };
+            return { StatusCode: 406, Message: DataError, IsError: true, CodeError: AppConfig.INVALID_CODE };
         else if (DataError.originalError.info.message.includes('E404'))
             return { StatusCode: 404, Message: DataError, IsError: true, CodeError: AppConfig.USER_NOT_FOUND };
     } catch (error) { }

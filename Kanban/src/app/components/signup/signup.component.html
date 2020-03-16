@@ -12,22 +12,22 @@
                                 <mat-label>Email</mat-label>
                                 <mat-icon matSuffix color="primary" type="email" inline="true">alternate_email
                                 </mat-icon>
-                                <input matInput placeholder="Usuario o Email" formControlName="EmailAddress">
+                                <input autofocus matInput placeholder="Email" formControlName="EmailAddress" required>
                             </mat-form-field>
                             <mat-form-field>
                                 <mat-label>Contraseña</mat-label>
                                 <mat-icon matSuffix color="primary" inline="true">vpn_key</mat-icon>
-                                <input matInput type="password" placeholder="Contraseña" formControlName="Password">
+                                <input matInput type="password" placeholder="Contraseña" formControlName="Password" required>
                             </mat-form-field>
                             <mat-form-field>
                                 <mat-label>Nombres</mat-label>
                                 <mat-icon matSuffix color="primary" inline="true">account_circle</mat-icon>
-                                <input matInput placeholder="Nombres" formControlName="FirstName">
+                                <input matInput placeholder="Nombres" formControlName="FirstName" required>
                             </mat-form-field>
                             <mat-form-field>
                                 <mat-label>Apellidos</mat-label>
                                 <mat-icon matSuffix color="primary" inline="true">account_circle</mat-icon>
-                                <input matInput placeholder="Apellidos" formControlName="LastName">
+                                <input matInput placeholder="Apellidos" formControlName="LastName" required>
                             </mat-form-field>
                         </form>
                     </div>
@@ -43,4 +43,5 @@
             </mat-card-actions>
         </mat-card>
     </div>
+    <app-loading [displayProgressSpinner]="Loading"></app-loading>
 </div>

@@ -5,10 +5,13 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
 import { HttpClientModule } from '@angular/common/http';
+import { OverlayService } from './services/overlay.service';
+import { LoadingModule } from './components/loading/loading.module';
+import { CodeDialogModule } from './components/code-dialog/code-dialog.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
@@ -16,8 +19,10 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserAnimationsModule,
     MaterialModule,
     HttpClientModule,
+    LoadingModule,
+    CodeDialogModule
   ],
-  providers: [],
+  providers: [OverlayService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,0 +1,14 @@
+<h1 mat-dialog-title style="text-align: center;">Hola {{data.User.User}}</h1>
+<div mat-dialog-content>
+    <p>Su código de activación ha sido enviado</p>
+    <mat-form-field style="width: 100%;">
+        <mat-label>Código</mat-label>
+        <input matInput [(ngModel)]="data.User.Code" placeholder="Código">
+    </mat-form-field>
+</div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="center center">
+    <button mat-button color="error" (click)="onNoClick()">Cancelar</button>
+    <button color="primary" mat-button>Reenviar</button>
+    <button mat-raised-button [mat-dialog-close]="data" color="primary"
+        [disabled]="IsEmpty()">Enviar</button>
+</div>

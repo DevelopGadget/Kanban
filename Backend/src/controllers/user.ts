@@ -59,7 +59,7 @@ class User extends Controller {
                     .input('CityName', req.body.CityName)
                     .input('EmailValidationCode', req.body.Code)
                     .execute('CreateUser');
-                return res.status(202).json({ StatusCode: 202, Message: { Id: result.recordset[0].Id, Email: req.body.EmailAddress }, CodeError: null, IsError: false });
+                return res.status(202).json({ StatusCode: 202, Message: { Id: result.recordset[0].Id, User: req.body.EmailAddress }, CodeError: null, IsError: false });
             } catch (error) {
                 const dataError = ValidateError(error);
                 return res.status(dataError.StatusCode).json(dataError);
@@ -78,7 +78,7 @@ class User extends Controller {
                     .execute('LoginUser');
                 return res.status(200).json({ StatusCode: 200, Message: { 'Token': AuthController.CreateToken(result.recordset[0].Id, result.recordset[0].EmailAddress), ...result.recordset[0] }, CodeError: null, IsError: false });
             } catch (error) {
-                const dataError = ValidateError(error);
+                const dataError = ValidateError(error, req.body.User);
                 return res.status(dataError.StatusCode).json(dataError);
             }
         } else {
@@ -112,11 +112,11 @@ class User extends Controller {
         if (AppConfig.SQLInstance) {
             try {
                 let result = await AppConfig.SQLInstance.request()
-                    .input('User', req.headers.User ?? req.headers.user)
-                    .input('Id', req.headers.Id ?? req.headers.id)
-                    .input('Code', req.params.Code)
+                    .input('User', req.body.User)
+                    .input('Id', req.body.Id)
+                    .input('Code', req.body.Code)
                     .execute('ValidateEmail');
-                return res.status(200).json({ StatusCode: 200, Message: result.recordset[0], CodeError: null, IsError: false });
+                return res.status(200).json({ StatusCode: 200, Message: { 'Token': AuthController.CreateToken(result.recordset[0].Id, result.recordset[0].EmailAddress), ...result.recordset[0] }, CodeError: null, IsError: false });
             } catch (error) {
                 const dataError = ValidateError(error);
                 return res.status(dataError.StatusCode).json(dataError);
