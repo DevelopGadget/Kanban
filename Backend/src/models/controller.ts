@@ -15,11 +15,11 @@ export const ValidateError = (DataError: any, User: string = ''): ResponseData =
         if (DataError.originalError.info.message.includes('2627'))
             return { StatusCode: 409, Message: DataError, CodeError: AppConfig.EMAIL_DUPLICATE, IsError: true };
         else if (DataError.originalError.info.message.includes('A002'))
-            return { StatusCode: 201, Message: DataError, CodeError: AppConfig.INACTIVE_USER, IsError: true };
+            return { StatusCode: 409, Message: DataError, CodeError: AppConfig.INACTIVE_USER, IsError: true };
         else if (DataError.originalError.info.message.includes('A003'))
             return { StatusCode: 401, Message: DataError, CodeError: AppConfig.INVALID_PASSWORD, IsError: true };
         else if (DataError.originalError.info.message.includes('A004'))
-            return { StatusCode: 202, Message: { 'Id': DataError.originalError.info.message.split(' ')[2], User }, IsError: true, CodeError: AppConfig.NOT_VERIFIED_EMAIL };
+            return { StatusCode: 409, Message: { 'Id': DataError.originalError.info.message.split(' ')[2], User }, IsError: true, CodeError: AppConfig.NOT_VERIFIED_EMAIL };
         else if (DataError.originalError.info.message.includes('A005'))
             return { StatusCode: 203, Message: DataError, IsError: true, CodeError: AppConfig.VERIFIED_EMAIL };
         else if (DataError.originalError.info.message.includes('A006'))

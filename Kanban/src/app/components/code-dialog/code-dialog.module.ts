@@ -5,7 +5,6 @@ import { CodeDialogComponent } from './code-dialog.component';
 import { MaterialModule } from 'src/app/material.module';
 
 @NgModule({
-
     declarations: [CodeDialogComponent],
     imports: [CommonModule, MatDialogModule, MaterialModule],
     entryComponents: [CodeDialogComponent],

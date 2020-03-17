@@ -11,6 +11,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatListModule } from '@angular/material/list';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
   declarations: [],
@@ -27,7 +29,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     ReactiveFormsModule,
     MatSnackBarModule,
     FormsModule,
-    MatProgressSpinnerModule
+    MatListModule,
+    MatProgressSpinnerModule,
+    MatBadgeModule
   ],
   exports: [
     CommonModule,
@@ -42,7 +46,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     ReactiveFormsModule,
     MatSnackBarModule,
     FormsModule,
-    MatProgressSpinnerModule
+    MatListModule,
+    MatProgressSpinnerModule,
+    MatBadgeModule
   ]
 })
 export class MaterialModule { }

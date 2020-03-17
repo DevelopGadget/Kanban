@@ -10,5 +10,5 @@
     <button mat-button color="error" (click)="onNoClick()">Cancelar</button>
     <button color="primary" mat-button>Reenviar</button>
     <button mat-raised-button [mat-dialog-close]="data" color="primary"
-        [disabled]="IsEmpty()">Enviar</button>
+        [disabled]="IsEmpty()" (click)="this.data.IsOk = true">Enviar</button>
 </div>

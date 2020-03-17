@@ -20,7 +20,9 @@ export class CodeDialogComponent implements OnInit {
   }
 
   IsEmpty(): boolean {
-    return !this.data || this.data.User.Code === '' || this.data.User.Code.includes(' ');
+    if (this.data.User.Code)
+      return !this.data || this.data.User.Code === '' || this.data.User.Code.includes(' ');
+    return true;
   }
 
 }

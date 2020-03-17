@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   EmailValidatorCode(UserData: EmailValidatorCode): Observable<User> {
-    return this.Http.put<ResponseData>(environment.api + '/api/user/email', UserData).pipe(
+    return this.Http.put<ResponseData>(environment.api + '/api/auth/email', UserData).pipe(
       map(response => response.Message)
     );
   }
