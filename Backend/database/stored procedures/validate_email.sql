@@ -1,7 +1,8 @@
-CREATE PROCEDURE [dbo].ValidateEmail
+ALTER PROCEDURE [dbo].ValidateEmail
     @Id                              NVARCHAR (MAX),
     @User                            NVARCHAR (100) ,
-    @Code                            NVARCHAR (100)
+    @Code                            NVARCHAR (100),
+    @IsReSend                        BIT
 AS
 
 BEGIN
@@ -44,37 +45,53 @@ BEGIN
         RAISERROR('A005', 16, 1)
         RETURN;
     END
-
-    IF(@Code != CONVERT(varchar, DecryptByKey(@EmailValidationCode)))
+    IF(@IsReSend = 0)
         BEGIN
-        RAISERROR('A006', 16, 1)
-        RETURN;
-    END
+            IF(@Code != CONVERT(varchar, DecryptByKey(@EmailValidationCode)))
+            BEGIN
+                RAISERROR('A006', 16, 1)
+                RETURN;
+            END
 
-    CLOSE SYMMETRIC KEY SymmetricKey1;
+            CLOSE SYMMETRIC KEY SymmetricKey1;
 
-    UPDATE
-        [dbo].Users
-    SET
-        EmailValidationCode = NULL,
-        EmailValidationCode_IsValidated = 1
-    OUTPUT
-        Inserted.Id,
-        Inserted.Username,
-        Inserted.CityName,
-        Inserted.CountryCode,
-        Inserted.EmailAddress,
-        Inserted.Gender,
-        Inserted.FirstName,
-        Inserted.LastName,
-        Inserted.EmailValidationCode_IsValidated,
-        Inserted.IsActiveUser
-    WHERE
-        Id = @Id AND
-        (EmailAddress = @User OR Username = @User)
+            UPDATE
+                [dbo].Users
+            SET
+                EmailValidationCode = NULL,
+                EmailValidationCode_IsValidated = 1
+            OUTPUT
+                Inserted.Id,
+                Inserted.Username,
+                Inserted.CityName,
+                Inserted.CountryCode,
+                Inserted.EmailAddress,
+                Inserted.UrlImage,
+                Inserted.Gender,
+                Inserted.FirstName,
+                Inserted.LastName,
+                Inserted.EmailValidationCode_IsValidated,
+                Inserted.IsActiveUser
+            WHERE
+                Id = @Id AND
+                (EmailAddress = @User OR Username = @User)
 
-    
-        
+        END
+    ELSE
+        BEGIN
+            UPDATE
+                [dbo].Users
+            SET
+                EmailValidationCode = EncryptByKey (Key_GUID('SymmetricKey1'),@Code),
+                EmailValidationCode_IsValidated = 0
+            OUTPUT
+                Inserted.Id,
+                Inserted.Username
+            WHERE
+                Id = @Id AND
+                (EmailAddress = @User OR Username = @User)
+        END
+            
 END TRY
 BEGIN CATCH
     CLOSE SYMMETRIC KEY SymmetricKey1;
@@ -87,9 +104,9 @@ BEGIN CATCH
     DECLARE @ErrorNumber INT;  
 
     SELECT
-		@ErrorSeverity = ERROR_SEVERITY(),
-		@ErrorState = ERROR_STATE(),
- 		@ErrorNumber = ERROR_NUMBER(),
+        @ErrorSeverity = ERROR_SEVERITY(),
+        @ErrorState = ERROR_STATE(),
+        @ErrorNumber = ERROR_NUMBER(),
         @ErrorMessage = ERROR_MESSAGE();
 
     RAISERROR ('%i %s', -- Message text.  

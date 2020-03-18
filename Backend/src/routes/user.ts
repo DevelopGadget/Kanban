@@ -14,6 +14,7 @@ class User {
         this.Router.post('/auth/signup', UserMiddleware.IsValidUser, UserMiddleware.IsValidEmail, UserController.Post);
         this.Router.post('/auth/login', UserMiddleware.IsValidLogin, UserController.PostLogin);
         this.Router.put('/user', UserMiddleware.IsValidToken, UserMiddleware.IsValidUpdate, UserController.Put);
+        this.Router.put('/user/image', UserMiddleware.IsValidToken, UserMiddleware.IsValidImage, UserController.PutImage);
         this.Router.put('/auth/email', UserMiddleware.IsValidCode, UserController.PutEmailValidationCode);
         this.Router.delete('/user', UserMiddleware.IsValidToken, UserController.Delete);
     }

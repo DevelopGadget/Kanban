@@ -108,6 +108,26 @@ class User extends Controller {
         }
     }
 
+    async PutImage(req: Request, res: Response): Promise<Response<ResponseData>> {
+        if (AppConfig.SQLInstance) {
+            try {
+                const public_id = `Kanban/${req.headers.Id}${req.body.ExtPath}`;
+                const image = await AppConfig.CloudImage.uploader.upload(req.body.UrlImage, { public_id: public_id });
+                let result = await AppConfig.SQLInstance.request()
+                    .input('User', req.headers.User ?? req.headers.user)
+                    .input('Id', req.headers.Id ?? req.headers.id)
+                    .input('UrlImage', image.secure_url)
+                    .execute('UpdateUser');
+                return res.status(200).json({ StatusCode: 200, Message: result.recordset[0], CodeError: null, IsError: false });
+            } catch (error) {
+                const dataError = ValidateError(error);
+                return res.status(dataError.StatusCode).json(dataError);
+            }
+        } else {
+            return res.status(500).json({ StatusCode: 500, Message: 'DATABASE_NOT_INIT', CodeError: AppConfig.DATABASE_NOT_INIT, IsError: true });
+        }
+    }
+
     async PutEmailValidationCode(req: Request, res: Response): Promise<Response<ResponseData>> {
         if (AppConfig.SQLInstance) {
             try {
@@ -115,7 +135,10 @@ class User extends Controller {
                     .input('User', req.body.User)
                     .input('Id', req.body.Id)
                     .input('Code', req.body.Code)
+                    .input('IsReSend', req.body.IsReSend)
                     .execute('ValidateEmail');
+                if (req.body.IsReSend)
+                    return res.status(200).json({ StatusCode: 200, Message: result.recordset[0], CodeError: null, IsError: false });
                 return res.status(200).json({ StatusCode: 200, Message: { 'Token': AuthController.CreateToken(result.recordset[0].Id, result.recordset[0].EmailAddress), ...result.recordset[0] }, CodeError: null, IsError: false });
             } catch (error) {
                 const dataError = ValidateError(error);

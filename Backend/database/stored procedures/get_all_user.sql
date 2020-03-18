@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].GetAllUser
+ALTER PROCEDURE [dbo].GetAllUser
     @PageNumber INT = 1,
     @PageSize   INT = 100,
     @Id                      NVARCHAR (MAX),
@@ -15,6 +15,7 @@ BEGIN
         EmailAddress,
         Gender,
         FirstName,
+        UrlImage,
         LastName,
         EmailValidationCode_IsValidated,
         IsActiveUser

@@ -3,6 +3,7 @@ import SQL from 'mssql';
 import { resolve } from 'path';
 import Fs from 'fs';
 import SendGridConfig from '../models/send_grid_config';
+import { v2 as Cloudinary } from 'cloudinary';
 
 class App {
 
@@ -49,6 +50,7 @@ class App {
     PrivateKey: string = Fs.readFileSync(resolve(__dirname, '../private.key'), 'utf8');
     PublicKey: string = Fs.readFileSync(resolve(__dirname, '../public.key'), 'utf8');
     EmailConfig: SendGridConfig = { Email: process.env.EMAIL, Key: process.env.SENDGRID_API_KEY, TemplateId: process.env.TEMPLATE };
+    CloudImage = Cloudinary;
 
     /**
      * InitVariables
@@ -65,6 +67,11 @@ class App {
             }
         };
         this.Encrypt = process.env.ENCRYPT;
+        Cloudinary.config({
+            cloud_name: process.env.CLOUD_NAME,
+            api_key: process.env.API_KEY,
+            api_secret: process.env.API_SECRET
+        });
     }
 
 }

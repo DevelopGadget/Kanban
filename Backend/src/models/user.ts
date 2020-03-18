@@ -3,15 +3,16 @@ import * as Joi from '@hapi/joi';
 interface User {
 
     Id: string;
-    FirstName: string;
-    LastName: string;
+    FirstName?: string;
+    LastName?: string;
     EmailAdress: string;
+    UrlImage?: string;
     Username: string;
-    Gender: string;
+    Gender?: string;
     EmailValidationCode_IsValidated: number;
     IsActiveUser: number;
-    CountryCode: string;
-    CityName: string;
+    CountryCode?: string;
+    CityName?: string;
 
 }
 
@@ -31,6 +32,11 @@ export const OptionalUserObject: Joi.SchemaMap = {
     CityName: Joi.string().optional()
 };
 
+export const ImageModel: Joi.ObjectSchema = Joi.object({
+    UrlImage: Joi.string().dataUri().required(),
+    ExtPath: Joi.string().valid('.jpeg', '.jpg', '.png', '.svg').required()
+});
+
 export const OptionalUserUpdate: Joi.ObjectSchema = Joi.object({
     FirstName: Joi.string().optional().max(100),
     LastName: Joi.string().optional().max(100),
@@ -44,7 +50,8 @@ export const Pagination: Joi.ObjectSchema = Joi.object({
 export const ValidationCode: Joi.ObjectSchema = Joi.object({
     Id: Joi.string().required(),
     User: Joi.string().required(),
-    Code: Joi.string().required(),
+    Code: Joi.string().optional(),
+    IsReSend: Joi.bool().required(),
 });
 
 export const Login: Joi.ObjectSchema = Joi.object({

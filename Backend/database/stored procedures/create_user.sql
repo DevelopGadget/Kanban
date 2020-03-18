@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].CreateUser
+ALTER PROCEDURE [dbo].CreateUser
 	@EmailAddress                    NVARCHAR (255),
 	@Username                        NVARCHAR (100),
 	@Password                        NVARCHAR (16),
@@ -7,6 +7,7 @@ CREATE PROCEDURE [dbo].CreateUser
 	@Gender                          CHAR (1),
 	@CountryCode                     NVARCHAR (100),
 	@CityName                        NVARCHAR (100),
+	@UrlImage                        NVARCHAR (MAX),
 	@EmailValidationCode             NVARCHAR (20)
 
 AS
@@ -28,7 +29,8 @@ BEGIN TRY
 		EmailValidationCode,
 		CreateAt,
 		CountryCode,
-		CityName
+		CityName,
+		UrlImage
 	)
 	OUTPUT
 		Inserted.Id
@@ -44,7 +46,8 @@ BEGIN TRY
 		EncryptByKey (Key_GUID('SymmetricKey1'),@EmailValidationCode),
 		CURRENT_TIMESTAMP,
 		@CountryCode,
-		@CityName
+		@CityName,
+		@UrlImage
 	)
 	CLOSE SYMMETRIC KEY SymmetricKey1;
 END TRY

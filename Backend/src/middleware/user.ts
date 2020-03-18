@@ -1,4 +1,4 @@
-import { OptionalUserObject, RequiredUserObject, Login, OptionalUserUpdate, Pagination, ValidationCode } from '../models/user';
+import { OptionalUserObject, RequiredUserObject, Login, OptionalUserUpdate, Pagination, ValidationCode, ImageModel } from '../models/user';
 import { Request, Response, NextFunction } from 'express';
 import AppConfig from '../Config/app';
 import AuthController from '../controllers/auth';
@@ -53,9 +53,20 @@ class User {
         next();
     }
 
+    public async IsValidImage(req: Request, res: Response, next: NextFunction) {
+        try {
+            await ImageModel.validateAsync(req.body);
+        } catch (error) {
+            return res.status(406).json({ StatusCode: 406, Message: error, CodeError: AppConfig.OBJECT_DATA_NOT_VALID, Error: true });
+        }
+        next();
+    }
+
     public async IsValidCode(req: Request, res: Response, next: NextFunction) {
         try {
             await ValidationCode.validateAsync(req.body);
+            if (req.body.IsReSend)
+                req.body.Code = await AuthController.CreateCode();
         } catch (error) {
             return res.status(406).json({ StatusCode: 406, Message: error, CodeError: AppConfig.OBJECT_DATA_NOT_VALID, Error: true });
         }

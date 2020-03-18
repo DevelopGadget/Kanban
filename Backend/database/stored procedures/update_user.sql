@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].UpdateUser
+ALTER PROCEDURE [dbo].UpdateUser
     @Id                              NVARCHAR (MAX),
     @User                            NVARCHAR (100) ,
     @Password                        NVARCHAR (16),
@@ -6,6 +6,7 @@ CREATE PROCEDURE [dbo].UpdateUser
 	@LastName                        NVARCHAR (100),
     @CountryCode                     NVARCHAR (100),
 	@CityName                        NVARCHAR (100),
+    @UrlImage                        NVARCHAR (MAX),
 	@Gender                          CHAR (1)
 AS
 
@@ -53,11 +54,12 @@ BEGIN
     UPDATE
         [dbo].Users
     SET
-        CountryCode = @CountryCode,
-        CityName = @CityName,
-        Gender = @Gender,
-        FirstName = @FirstName,
-        LastName = @LastName
+        CountryCode = ISNULL(@CountryCode, CountryCode),
+        CityName = ISNULL(@CityName, CityName),
+        Gender = ISNULL(@Gender, Gender),
+        FirstName = ISNULL(@FirstName, FirstName),
+        LastName = ISNULL(@LastName, LastName),
+        UrlImage = ISNULL(@UrlImage, UrlImage)
     WHERE
         Id = @Id AND
         (EmailAddress = @User OR Username = @User)

@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].GetUser
+ALTER PROCEDURE [dbo].GetUser
     @Id                      NVARCHAR (MAX),
     @User                    NVARCHAR (255)
 AS
@@ -15,6 +15,7 @@ BEGIN
     DECLARE @IsActiveUser BIT;
     DECLARE @CountryCode VARCHAR(5);
     DECLARE @CityName VARCHAR(100);
+    DECLARE @UrlImage VARCHAR(MAX);
 
     BEGIN TRY
 
@@ -28,7 +29,8 @@ BEGIN
             @EmailValidationCode_IsValidated = EmailValidationCode_IsValidated,
             @IsActiveUser = IsActiveUser,
             @CountryCode = CountryCode,
-            @CityName = CityName
+            @CityName = CityName,
+            @UrlImage = UrlImage
         FROM
             [dbo].Users
         WHERE
@@ -57,7 +59,8 @@ BEGIN
             @FirstName AS FirstName,
             @LastName AS LastName,
             @EmailValidationCode_IsValidated AS EmailValidationCode_IsValidated,
-            @IsActiveUser AS IsActiveUser;
+            @IsActiveUser AS IsActiveUser,
+            @UrlImage AS UrlImage;
 
     END TRY
     BEGIN CATCH

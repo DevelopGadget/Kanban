@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].LoginUser
+ALTER PROCEDURE [dbo].LoginUser
     @Password                        NVARCHAR (255),
     @User                            NVARCHAR (100)
 AS
@@ -19,6 +19,7 @@ BEGIN
     DECLARE @IsActiveUser BIT;
     DECLARE @CountryCode NVARCHAR(5);
     DECLARE @CityName NVARCHAR(100);
+    DECLARE @UrlImage NVARCHAR(MAX);
 
     BEGIN TRY
 
@@ -33,7 +34,8 @@ BEGIN
         @EmailValidationCode_IsValidated = EmailValidationCode_IsValidated,
         @CountryCode = CountryCode,
         @CityName = CityName,
-        @FirstName = FirstName
+        @FirstName = FirstName,
+        @UrlImage = UrlImage
     FROM
         [dbo].Users
     WHERE
@@ -72,6 +74,7 @@ BEGIN
         @CountryCode AS CountryCode,
         @EmailAddress AS EmailAddress,
         @Gender AS Gender,
+        @UrlImage AS UrlImage,
         @FirstName AS FirstName,
         @LastName AS LastName,
         @EmailValidationCode_IsValidated AS EmailValidationCode_IsValidated,
