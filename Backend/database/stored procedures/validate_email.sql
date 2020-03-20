@@ -18,15 +18,15 @@ BEGIN
     BEGIN TRY
 
     SELECT TOP(1)
-        @IdUser = Id,
-        @IsActiveUser = IsActiveUser,
-        @EmailValidationCode_IsValidated = EmailValidationCode_IsValidated,
-        @EmailValidationCode = EmailValidationCode
+        @IdUser = [Id],
+        @IsActiveUser = [IsActiveUser],
+        @EmailValidationCode_IsValidated = [EmailValidationCode_IsValidated],
+        @EmailValidationCode = [EmailValidationCode]
     FROM
         [dbo].Users
     WHERE
-        Id = @Id AND
-        (EmailAddress = @User OR Username = @User)
+        [Id] = @Id AND
+        ([EmailAddress] = @User OR [Username] = @User)
 
     IF(@IdUser IS NULL)
         BEGIN
@@ -58,23 +58,23 @@ BEGIN
             UPDATE
                 [dbo].Users
             SET
-                EmailValidationCode = NULL,
-                EmailValidationCode_IsValidated = 1
+                [EmailValidationCode] = NULL,
+                [EmailValidationCode_IsValidated] = 1
             OUTPUT
-                Inserted.Id,
-                Inserted.Username,
-                Inserted.CityName,
-                Inserted.CountryCode,
-                Inserted.EmailAddress,
-                Inserted.UrlImage,
-                Inserted.Gender,
-                Inserted.FirstName,
-                Inserted.LastName,
-                Inserted.EmailValidationCode_IsValidated,
-                Inserted.IsActiveUser
+                Inserted.[Id],
+                Inserted.[Username],
+                Inserted.[CityName],
+                Inserted.[CountryCode],
+                Inserted.[EmailAddress],
+                Inserted.[UrlImage],
+                Inserted.[Gender],
+                Inserted.[FirstName],
+                Inserted.[LastName],
+                Inserted.[EmailValidationCode_IsValidated],
+                Inserted.[IsActiveUser]
             WHERE
-                Id = @Id AND
-                (EmailAddress = @User OR Username = @User)
+                [Id] = @Id AND
+                ([EmailAddress] = @User OR [Username] = @User)
 
         END
     ELSE
@@ -82,14 +82,14 @@ BEGIN
             UPDATE
                 [dbo].Users
             SET
-                EmailValidationCode = EncryptByKey (Key_GUID('SymmetricKey1'),@Code),
-                EmailValidationCode_IsValidated = 0
+                [EmailValidationCode] = EncryptByKey (Key_GUID('SymmetricKey1'),@Code),
+                [EmailValidationCode_IsValidated] = 0
             OUTPUT
-                Inserted.Id,
-                Inserted.Username
+                Inserted.[Id],
+                Inserted.[Username]
             WHERE
-                Id = @Id AND
-                (EmailAddress = @User OR Username = @User)
+                [Id] = @Id AND
+                ([EmailAddress] = @User OR [Username] = @User)
         END
             
 END TRY

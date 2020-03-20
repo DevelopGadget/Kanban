@@ -24,22 +24,22 @@ BEGIN
     BEGIN TRY
 
     SELECT TOP(1)
-        @IsActiveUser = IsActiveUser,
-        @PasswordSelect = Password,
-        @Id = Id,
-        @EmailAddress = EmailAddress,
-        @LastName = LastName,
-        @Username = Username,
-        @Gender = Gender,
-        @EmailValidationCode_IsValidated = EmailValidationCode_IsValidated,
-        @CountryCode = CountryCode,
-        @CityName = CityName,
-        @FirstName = FirstName,
-        @UrlImage = UrlImage
+        @IsActiveUser = [IsActiveUser],
+        @PasswordSelect = [Password],
+        @Id = [Id],
+        @EmailAddress = [EmailAddress],
+        @LastName = [LastName],
+        @Username = [Username],
+        @Gender = [Gender],
+        @EmailValidationCode_IsValidated = [EmailValidationCode_IsValidated],
+        @CountryCode = [CountryCode],
+        @CityName = [CityName],
+        @FirstName = [FirstName],
+        @UrlImage = [UrlImage]
     FROM
         [dbo].Users
     WHERE
-        EmailAddress = @User OR Username = @User
+        [EmailAddress] = @User OR [Username] = @User
 
     IF(@Id IS NULL)
         BEGIN
@@ -68,17 +68,17 @@ BEGIN
     CLOSE SYMMETRIC KEY SymmetricKey1;
 
     SELECT
-        @Id AS Id,
-        @Username AS Username,
-        @CityName AS CityName,
-        @CountryCode AS CountryCode,
-        @EmailAddress AS EmailAddress,
-        @Gender AS Gender,
-        @UrlImage AS UrlImage,
-        @FirstName AS FirstName,
-        @LastName AS LastName,
-        @EmailValidationCode_IsValidated AS EmailValidationCode_IsValidated,
-        @IsActiveUser AS IsActiveUser;
+        @Id AS [Id],
+        @Username AS [Username],
+        @CityName AS [CityName],
+        @CountryCode AS [CountryCode],
+        @EmailAddress AS [EmailAddress],
+        @Gender AS [Gender],
+        @UrlImage AS [UrlImage],
+        @FirstName AS [FirstName],
+        @LastName AS [LastName],
+        @EmailValidationCode_IsValidated AS [EmailValidationCode_IsValidated],
+        @IsActiveUser AS [IsActiveUser];
         
 END TRY
 BEGIN CATCH

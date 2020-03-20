@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].InactiveUser
+ALTER PROCEDURE [dbo].InactiveUser
     @Id                              NVARCHAR (MAX),
     @User                            NVARCHAR (100) ,
     @Password                        NVARCHAR (16)
@@ -22,8 +22,8 @@ BEGIN
     FROM
         [dbo].Users
     WHERE
-        Id = @Id AND
-        (EmailAddress = @User OR Username = @User)
+        [Id] = @Id AND
+        ([EmailAddress] = @User OR [Username] = @User)
 
     IF(@IdUser IS NULL)
         BEGIN
@@ -48,10 +48,10 @@ BEGIN
     UPDATE
         [dbo].Users
     SET
-        IsActiveUser = 0
+        [IsActiveUser] = 0
     WHERE
-        Id = @Id AND
-        (EmailAddress = @User OR Username = @User)
+        [Id] = @Id AND
+        ([EmailAddress] = @User OR [Username] = @User)
         
 END TRY
 BEGIN CATCH

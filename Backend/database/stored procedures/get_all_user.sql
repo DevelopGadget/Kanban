@@ -8,21 +8,21 @@ BEGIN
     SET NOCOUNT ON;
 
     SELECT
-        Id,
-        Username,
-        CityName,
-        CountryCode,
-        EmailAddress,
-        Gender,
-        FirstName,
-        UrlImage,
-        LastName,
-        EmailValidationCode_IsValidated,
-        IsActiveUser
-    FROM dbo.Users
+        [Id],
+        [Username],
+        [CityName],
+        [CountryCode],
+        [EmailAddress],
+        [Gender],
+        [FirstName],
+        [UrlImage],
+        [LastName],
+        [EmailValidationCode_IsValidated],
+        [IsActiveUser]
+    FROM [dbo].Users
     WHERE
-        Id != @Id AND IsActiveUser = 1 AND EmailValidationCode_IsValidated = 1 AND
-        (EmailAddress != @User OR Username != @User)
+        [Id] != @Id AND [IsActiveUser] = 1 AND [EmailValidationCode_IsValidated] = 1 AND
+        ([EmailAddress] != @User OR [Username] != @User)
     ORDER BY Id
     OFFSET @PageSize *
     (@PageNumber - 1) ROWS

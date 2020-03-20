@@ -20,22 +20,22 @@ BEGIN
     BEGIN TRY
 
         SELECT TOP(1)
-            @IdUser = Id,
-            @EmailAddress = EmailAddress,
-            @LastName = LastName,
-            @FirstName = FirstName,
-            @Username = Username,
-            @Gender = Gender,
-            @EmailValidationCode_IsValidated = EmailValidationCode_IsValidated,
-            @IsActiveUser = IsActiveUser,
-            @CountryCode = CountryCode,
-            @CityName = CityName,
-            @UrlImage = UrlImage
+            @IdUser = [Id],
+            @EmailAddress = [EmailAddress],
+            @LastName = [LastName],
+            @FirstName = [FirstName],
+            @Username = [Username],
+            @Gender = [Gender],
+            @EmailValidationCode_IsValidated = [EmailValidationCode_IsValidated],
+            @IsActiveUser = [IsActiveUser],
+            @CountryCode = [CountryCode],
+            @CityName = [CityName],
+            @UrlImage = [UrlImage]
         FROM
             [dbo].Users
         WHERE
-            Id = @Id AND
-            (EmailAddress = @User OR Username = @User)
+            [Id] = @Id AND
+            ([EmailAddress] = @User OR [Username] = @User)
 
         IF(@IdUser IS NULL)
             BEGIN
@@ -50,17 +50,17 @@ BEGIN
         END
 
         SELECT
-            @IdUser AS Id,
-            @Username AS Username,
-            @CityName AS CityName,
-            @CountryCode AS CountryCode,
-            @EmailAddress AS EmailAddress,
-            @Gender AS Gender,
-            @FirstName AS FirstName,
-            @LastName AS LastName,
-            @EmailValidationCode_IsValidated AS EmailValidationCode_IsValidated,
-            @IsActiveUser AS IsActiveUser,
-            @UrlImage AS UrlImage;
+            @IdUser AS [Id],
+            @Username AS [Username],
+            @CityName AS [CityName],
+            @CountryCode AS [CountryCode],
+            @EmailAddress AS [EmailAddress],
+            @Gender AS [Gender],
+            @FirstName AS [FirstName],
+            @LastName AS [LastName],
+            @EmailValidationCode_IsValidated AS [EmailValidationCode_IsValidated],
+            @IsActiveUser AS [IsActiveUser],
+            @UrlImage AS [UrlImage];
 
     END TRY
     BEGIN CATCH

@@ -22,14 +22,14 @@ BEGIN
     BEGIN TRY
 
     SELECT TOP(1)
-        @IdUser = Id,
-        @IsActiveUser = IsActiveUser,
-        @PasswordSelect = Password
+        @IdUser = [Id],
+        @IsActiveUser = [IsActiveUser],
+        @PasswordSelect = [Password]
     FROM
         [dbo].Users
     WHERE
-        Id = @Id AND
-        (EmailAddress = @User OR Username = @User)
+        [Id] = @Id AND
+        ([EmailAddress] = @User OR [Username] = @User)
 
     IF(@IdUser IS NULL)
         BEGIN
@@ -54,15 +54,15 @@ BEGIN
     UPDATE
         [dbo].Users
     SET
-        CountryCode = ISNULL(@CountryCode, CountryCode),
-        CityName = ISNULL(@CityName, CityName),
-        Gender = ISNULL(@Gender, Gender),
-        FirstName = ISNULL(@FirstName, FirstName),
-        LastName = ISNULL(@LastName, LastName),
-        UrlImage = ISNULL(@UrlImage, UrlImage)
+        [CountryCode] = ISNULL(@CountryCode, [CountryCode]),
+        [CityName] = ISNULL(@CityName, [CityName]),
+        [Gender] = ISNULL(@Gender, [Gender]),
+        [FirstName] = ISNULL(@FirstName, [FirstName]),
+        [LastName] = ISNULL(@LastName, [LastName]),
+        [UrlImage] = ISNULL(@UrlImage, [UrlImage])
     WHERE
-        Id = @Id AND
-        (EmailAddress = @User OR Username = @User)
+        [Id] = @Id AND
+        ([EmailAddress] = @User OR [Username] = @User)
         
 END TRY
 BEGIN CATCH

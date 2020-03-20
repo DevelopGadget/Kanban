@@ -19,18 +19,18 @@ BEGIN TRY
 
 	INSERT INTO [dbo].Users
 	(
-		Id,
-		EmailAddress,
-		Username,
-		Password,
-		FirstName,
-		LastName,
-		Gender,
-		EmailValidationCode,
-		CreateAt,
-		CountryCode,
-		CityName,
-		UrlImage
+		[Id],
+		[EmailAddress],
+		[Username],
+		[Password],
+		[FirstName],
+		[LastName],
+		[Gender],
+		[EmailValidationCode],
+		[CreateAt],
+		[CountryCode],
+		[CityName],
+		[UrlImage]
 	)
 	OUTPUT
 		Inserted.Id
