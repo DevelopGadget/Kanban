@@ -15,6 +15,7 @@ BEGIN
         [FirstName] NVARCHAR (100) NOT NULL,
         [Gender] CHAR (1) NULL,
         [EmailValidationCode_IsValidated] BIT DEFAULT 0 NOT NULL,
+        [IsActiveMember] BIT DEFAULT 1 NOT NULL,
         [IsActiveUser] BIT DEFAULT 1 NOT NULL
     );
     DECLARE @ProjectCurrent TABLE(
@@ -115,7 +116,8 @@ BEGIN
             [UrlImage],
             [LastName],
             [EmailValidationCode_IsValidated],
-            [IsActiveUser]
+            [IsActiveUser],
+            [IsActiveMember]
         )
         SELECT
             Users.[Id],
@@ -128,7 +130,8 @@ BEGIN
             Users.[UrlImage],
             Users.[LastName],
             Users.[EmailValidationCode_IsValidated],
-            Users.[IsActiveUser]
+            Users.[IsActiveUser],
+            [IsActiveMember]
         FROM [dbo].MembersProject INNER JOIN [dbo].Users 
         ON IdProject = @IdProject AND IdUser = Users.[Id];
 

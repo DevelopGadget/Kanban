@@ -1,6 +1,6 @@
 ALTER PROCEDURE [dbo].InactiveUser
     @Id                              NVARCHAR (MAX),
-    @User                            NVARCHAR (100) ,
+    @User                            NVARCHAR (100),
     @Password                        NVARCHAR (16)
 AS
 
@@ -9,7 +9,6 @@ BEGIN
     OPEN SYMMETRIC KEY SymmetricKey1
     DECRYPTION BY CERTIFICATE Certificate1;
 
-    DECLARE @IsActiveUser BIT;
     DECLARE @IdUser UNIQUEIDENTIFIER;
     DECLARE @PasswordSelect NVARCHAR (255);
 
@@ -17,7 +16,6 @@ BEGIN
 
     SELECT TOP(1)
         @IdUser = Id,
-        @IsActiveUser = IsActiveUser,
         @PasswordSelect = Password
     FROM
         [dbo].Users
@@ -28,12 +26,6 @@ BEGIN
     IF(@IdUser IS NULL)
         BEGIN
         RAISERROR('E404', 16, 1)
-        RETURN;
-    END
-
-    IF(@IsActiveUser IS NULL OR @IsActiveUser = 0)
-        BEGIN
-        RAISERROR('A002', 16, 1)
         RETURN;
     END
 
@@ -48,7 +40,7 @@ BEGIN
     UPDATE
         [dbo].Users
     SET
-        [IsActiveUser] = 0
+        [IsActiveUser] = ~[IsActiveUser]
     WHERE
         [Id] = @Id AND
         ([EmailAddress] = @User OR [Username] = @User)

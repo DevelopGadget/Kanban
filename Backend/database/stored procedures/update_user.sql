@@ -60,6 +60,18 @@ BEGIN
         [FirstName] = ISNULL(@FirstName, [FirstName]),
         [LastName] = ISNULL(@LastName, [LastName]),
         [UrlImage] = ISNULL(@UrlImage, [UrlImage])
+    OUTPUT
+        deleted.[Id],
+        deleted.[Username],
+        deleted.[CityName],
+        deleted.[CountryCode],
+        deleted.[EmailAddress],
+        deleted.[Gender],
+        deleted.[FirstName],
+        deleted.[LastName],
+        deleted.[EmailValidationCode_IsValidated],
+        deleted.[IsActiveUser],
+        deleted.[UrlImage]
     WHERE
         [Id] = @Id AND
         ([EmailAddress] = @User OR [Username] = @User)
