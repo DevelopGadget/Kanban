@@ -23,6 +23,7 @@ BEGIN
         [Name] NVARCHAR(50),
         [Description] NVARCHAR(100),
         [CreateAt] DATETIME NOT NULL,
+        [IsActiveProject] BIT DEFAULT 1 NOT NULL,
         [IdUser] UNIQUEIDENTIFIER NOT NULL,
         [EmailAddress] NVARCHAR (255) NOT NULL,
         [Username] NVARCHAR (100) NOT NULL,
@@ -41,6 +42,7 @@ BEGIN
             [Name],
             [Description],
             [CreateAt],
+            [IsActiveProject],
             [IdUser],
             [Username],
             [CityName],
@@ -53,11 +55,12 @@ BEGIN
             [EmailValidationCode_IsValidated],
             [IsActiveUser]
         )
-        SELECT 
+        SELECT TOP (1)
             Pro.[Id],
             Pro.[Name],
             Pro.[Description],
             Pro.[CreateAt],
+            Pro.[IsActiveProject],
             Users.[Id] AS IdUser,
             Users.[Username],
             Users.[CityName],
@@ -72,7 +75,7 @@ BEGIN
         FROM [dbo].Projects Pro INNER JOIN [dbo].Users
         ON Pro.[Id] = @IdProject AND Admin = Users.[Id]; 
 
-        IF NOT EXISTS(SELECT * FROM @ProjectCurrent)
+        IF NOT EXISTS(SELECT * FROM @ProjectCurrent WHERE [IsActiveProject] = 1)
             BEGIN
                 RAISERROR('P404', 16, 1)
                 RETURN;
@@ -119,22 +122,7 @@ BEGIN
             [IsActiveUser],
             [IsActiveMember]
         )
-        SELECT
-            Users.[Id],
-            Users.[Username],
-            Users.[CityName],
-            Users.[CountryCode],
-            Users.[EmailAddress],
-            Users.[Gender],
-            Users.[FirstName],
-            Users.[UrlImage],
-            Users.[LastName],
-            Users.[EmailValidationCode_IsValidated],
-            Users.[IsActiveUser],
-            [IsActiveMember]
-        FROM [dbo].MembersProject INNER JOIN [dbo].Users 
-        ON IdProject = @IdProject AND IdUser = Users.[Id];
-
+        SELECT * FROM [dbo].GetMembers(@IdProject); 
         IF NOT EXISTS(SELECT * FROM @Members WHERE [Id] = @IdUser)
             BEGIN
                 RAISERROR('E404', 16, 1)

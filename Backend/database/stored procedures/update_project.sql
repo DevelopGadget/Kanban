@@ -1,8 +1,9 @@
-CREATE PROCEDURE [dbo].UpdateProject 
+ALTER PROCEDURE [dbo].UpdateProject 
     @Name NVARCHAR(50),
     @Description NVARCHAR(100),
     @IdUser NVARCHAR(100),
-    @Id NVARCHAR(100)
+    @Id NVARCHAR(100),
+    @Type BIT
 AS
 BEGIN
     DECLARE @IdCurrent NVARCHAR(MAX);
@@ -27,16 +28,28 @@ BEGIN
                 RETURN;
             END
 
-        UPDATE [dbo].projects
-        SET
-            [Name] = ISNULL(@Name, [Name]),
-            [Description] = ISNULL(@Description, [Description])
-        OUTPUT 
-            deleted.[Id], 
-            deleted.[Name], 
-            deleted.[Description],
-            deleted.[CreateAt] 
-        WHERE @IdCurrent = [Id];
+        IF(@Type = 1)
+            BEGIN
+
+                UPDATE [dbo].projects
+                SET
+                    [Name] = ISNULL(@Name, [Name]),
+                    [Description] = ISNULL(@Description, [Description])
+                OUTPUT 
+                    deleted.[Id], 
+                    deleted.[Name], 
+                    deleted.[Description],
+                    deleted.[CreateAt] 
+                WHERE @IdCurrent = [Id];
+
+            END
+        ELSE
+            BEGIN
+                UPDATE [dbo].projects
+                SET
+                    [IsActiveProject] = ~[IsActiveProject]
+                WHERE @IdCurrent = [Id];
+            END
 
     END TRY
     BEGIN CATCH

@@ -2,6 +2,7 @@ import express, { json, urlencoded, NextFunction, Response, Request } from 'expr
 import morgan from 'morgan';
 import User from './routes/user';
 import Config from './Config/app';
+import Project from './routes/project';
 
 class Index {
 
@@ -23,6 +24,7 @@ class Index {
 
     private ConfigRouters() {
         new User(this.app);
+        new Project(this.app);
     }
 
     private defaultHeader(req: Request, res: Response, next: NextFunction) {

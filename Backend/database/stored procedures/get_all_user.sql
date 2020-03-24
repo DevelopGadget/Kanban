@@ -5,8 +5,6 @@ ALTER PROCEDURE [dbo].GetAllUser
     @User                    NVARCHAR (255)
 AS
 BEGIN
-    SET NOCOUNT ON;
-
     SELECT
         [Id],
         [Username],
@@ -23,9 +21,8 @@ BEGIN
     WHERE
         [Id] != @Id AND [IsActiveUser] = 1 AND [EmailValidationCode_IsValidated] = 1 AND
         ([EmailAddress] != @User OR [Username] != @User)
-    ORDER BY Id
-    OFFSET @PageSize *
-    (@PageNumber - 1) ROWS
+    ORDER BY [Id] ASC
+    OFFSET @PageSize * (@PageNumber - 1) ROWS
     FETCH NEXT @PageSize ROWS ONLY
     OPTION
     (RECOMPILE);
